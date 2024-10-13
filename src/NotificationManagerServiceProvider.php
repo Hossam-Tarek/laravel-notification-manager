@@ -2,24 +2,59 @@
 
 namespace HossamTarek\NotificationManager;
 
-use Spatie\LaravelPackageTools\Package;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
-use HossamTarek\NotificationManager\Commands\NotificationManagerCommand;
+use Illuminate\Support\ServiceProvider;
 
-class NotificationManagerServiceProvider extends PackageServiceProvider
+class NotificationManagerServiceProvider extends ServiceProvider
 {
-    public function configurePackage(Package $package): void
+    /**
+     * Bootstrap the application services.
+     */
+    public function boot()
     {
         /*
-         * This class is a Package Service Provider
-         *
-         * More info: https://github.com/spatie/laravel-package-tools
+         * Optional methods to load your package assets
          */
-        $package
-            ->name('laravel-notification-manager')
-            ->hasConfigFile()
-            ->hasViews()
-            ->hasMigration('create_laravel_notification_manager_table')
-            ->hasCommand(NotificationManagerCommand::class);
+        // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'laravel notification manager');
+        // $this->loadViewsFrom(__DIR__.'/../resources/views', 'laravel notification manager');
+        // $this->loadMigrationsFrom(__DIR__.'/../database/migrations');
+        // $this->loadRoutesFrom(__DIR__.'/routes.php');
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                __DIR__.'/../config/notification-manager.php' => config_path('notification-manager.php'),
+            ], 'config');
+
+            // Publishing the views.
+            /*$this->publishes([
+                __DIR__.'/../resources/views' => resource_path('views/vendor/laravel notification manager'),
+            ], 'views');*/
+
+            // Publishing assets.
+            /*$this->publishes([
+                __DIR__.'/../resources/assets' => public_path('vendor/laravel notification manager'),
+            ], 'assets');*/
+
+            // Publishing the translation files.
+            /*$this->publishes([
+                __DIR__.'/../resources/lang' => resource_path('lang/vendor/laravel notification manager'),
+            ], 'lang');*/
+
+            // Registering package commands.
+            // $this->commands([]);
+        }
+    }
+
+    /**
+     * Register the application services.
+     */
+    public function register()
+    {
+        // Automatically apply the package configuration
+        $this->mergeConfigFrom(__DIR__.'/../config/notification-manager.php', 'laravel notification manager');
+
+        // Register the main class to use with the facade
+        $this->app->singleton('laravel notification manager', function () {
+            return new NotificationManager;
+        });
     }
 }
